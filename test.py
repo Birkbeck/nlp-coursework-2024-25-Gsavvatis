@@ -183,3 +183,24 @@ def fk_level(text, d):
     fk_score = 0.39 * avg_words_per_sentence + 11.8 * avg_syllables_per_word - 15.59
 
     return fk_score
+
+def get_fks(df):
+    """helper function to add fk scores to a dataframe"""
+    results = {}
+    cmudict = nltk.corpus.cmudict.dict()
+    for i, row in df.iterrows():
+        results[row["title"]] = round(fk_level(row["text"], cmudict), 4)
+    return results
+
+
+
+#TEST
+# Calculate FK scores
+fk_scores = get_fks(df)
+for title, score in fk_scores.items():
+    print(f"{title} (FK): {score}")
+
+# Add scores column to DataFrame
+df["fk"] = df["title"].map(fk_scores)
+
+print(df[["title", "ttr", "fk"]].head(10))  # Display key results

@@ -1,1 +1,13 @@
 Answers to the text questions go here.
+
+The Fletch-Kinkage score isn't always a good way to measure how hard 
+a text is, because sometimes it assumes that the text would have a 
+normal sentence structure, and if the text has loads of short 
+sentences, let's say like in a dialogue, then the score might 
+say that it's easy, even though there's a deep meaning in the 
+dialogue.Another reason the Flesch-Kincaid score isn’t always 
+reliable is because it depends on counting syllables in each word. 
+But this isn’t always accurate. If a word isn’t in the special 
+dictionary used, like the CMU Pronouncing Dictionary, the function 
+might guess the syllables wrong. That can mess up the final score 
+and make the text seem easier or harder than it really is.
