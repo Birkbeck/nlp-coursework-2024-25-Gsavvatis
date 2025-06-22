@@ -1,36 +1,51 @@
 print("hello")
 
 
+
+
+
 import nltk
 
 import spacy
 from pathlib import Path
 import pandas as pd
 
+# Download required resources (run only once)
+nltk.download('punkt')
+nltk.download('cmudict')
+
+
 def read_novels(path=Path.cwd() / "p1-texts" / "novels"):
 
+    rows = []  # List to store each novel's data
 
-    rows = []
+    # Loop through all .txt files in the directory
     for file in path.glob("*.txt"):
-        
+
+        # Extract title, author, and year from the filename
         title, author, year = file.stem.split("-")
+
+        # Open and read the contents of the file
         with open(file, "r", encoding="utf-8") as f:
             text = f.read()
+
+        # Add the data as a dictionary to the list
         rows.append(
             {
-            "text": text,
-            "title": title.strip(),
-            "author": author.strip(),
-            "year": int(year.strip())
+                "text": text,
+                "title": title.strip(),
+                "author": author.strip(),
+                "year": int(year.strip())
             }
         )
-    
-    #print(rows)
-    #print("Looking in:", path)
-    #print("Files found:", list(path.glob("*.txt")))
+
+    # Convert the list of dictionaries to a DataFrame
     df = pd.DataFrame(rows)
+
+    # Sort the DataFrame by year and reset the index
     df = df.sort_values(by="year").reset_index(drop=True)
-    return df
+
+    return df  # Return the final DataFrame
 
 
 
@@ -116,3 +131,26 @@ for title, score in ttr_scores.items():
 df["ttr"] = df["title"].map(ttr_scores)
 
 print(df.head())
+
+
+
+def count_syl(word, d):
+ 
+    if word in d:
+        count = 0
+        for sound in d[word][0]:
+            if sound[-1].isdigit():
+                count += 1
+        return count
+    else:
+        return 1
+    
+from nltk.corpus import cmudict
+d = cmudict.dict()
+
+print(count_syl("banana", d))      # Expected: 3
+print(count_syl("syllable", d))    # Expected: 3
+print(count_syl("crypt", d))       # Fallback estimate: 1
+print(count_syl("euphoria", d))    # Expected: 4
+
+
