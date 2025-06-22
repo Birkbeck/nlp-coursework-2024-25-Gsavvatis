@@ -1,8 +1,3 @@
-print("hello")
-
-
-
-
 
 import nltk
 
@@ -145,6 +140,7 @@ def count_syl(word, d):
     else:
         return 1
     
+'''  
 from nltk.corpus import cmudict
 d = cmudict.dict()
 
@@ -152,7 +148,7 @@ print(count_syl("banana", d))      # Expected: 3
 print(count_syl("syllable", d))    # Expected: 3
 print(count_syl("crypt", d))       # Fallback estimate: 1
 print(count_syl("euphoria", d))    # Expected: 4
-
+'''
 
 def fk_level(text, d):
     from nltk.tokenize import sent_tokenize, word_tokenize
@@ -266,4 +262,31 @@ def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
    
 parsed_df = parse(df)
 
+
+from collections import Counter
+
+def adjective_counts(doc):
+    adjectives = []
+    for token in doc:
+        if token.pos_ == "ADJ":
+            adjectives.append(token.text.lower())
+    return Counter(adjectives).most_common()
+
+
+for i, row in parsed_df.iterrows():
+    print(row["title"])
+    print(adjective_counts(row["parsed"])[:5])  # Top 5 adjectives
+    print()
+
+
+
+
+
+
+
+
+
+
   
+
+
