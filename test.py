@@ -204,3 +204,66 @@ for title, score in fk_scores.items():
 df["fk"] = df["title"].map(fk_scores)
 
 print(df[["title", "ttr", "fk"]].head(10))  # Display key results
+
+
+
+
+import spacy
+import pandas as pd
+from pathlib import Path
+import pickle
+
+'''
+def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
+    """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
+    the resulting  DataFrame to a pickle file"""
+    
+    nlp = spacy.load("en_core_web_sm")
+    df["parsed"] = df["text"].apply(nlp)
+
+    return df
+   
+
+    
+    import pandas as pd
+
+# Sample data
+sample_df = pd.DataFrame({
+    "title": ["Test Novel"],
+    "text": ["This is a short sentence. And here is another."]
+})
+
+# Call the parse function
+parsed_df = parse(sample_df)
+
+# Check the new column
+print(parsed_df[["title", "parsed"]])
+print("\nTokens in first doc:", [token.text for token in parsed_df["parsed"][0]])
+
+
+'''
+
+def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
+    """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
+    the resulting  DataFrame to a pickle file"""
+    
+    nlp = spacy.load("en_core_web_sm")
+
+    max_text_len = df["text"].str.len().max()
+    nlp.max_length = max_text_len + 1000
+
+    df["parsed"] = df["text"].apply(nlp)
+
+    store_path.mkdir(parents=True, exist_ok=True)
+
+    out_file = store_path / out_name
+    with open(out_file, "wb") as f:
+        pickle.dump(df, f)
+
+
+
+    return df
+   
+parsed_df = parse(df)
+
+  

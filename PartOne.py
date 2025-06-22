@@ -29,7 +29,35 @@ def fk_level(text, d):
     Returns:
         float: The Flesch-Kincaid Grade Level of the text. (higher grade is more difficult)
     """
-    pass
+        from nltk.tokenize import sent_tokenize, word_tokenize
+
+    # Separate text into sentences and words
+    sentences = sent_tokenize(text)
+    words = word_tokenize(text)
+
+    # Filter out non-alphabetic tokens
+    
+    filtered_words = []
+    for w in words:
+        if w.isalpha():
+            filtered_words.append(w)
+    words = filtered_words
+
+
+    # Count total syllables using the dictionary
+    syllables = 0
+    for word in words:
+        lower_word = word.lower()
+        syllables += count_syl(lower_word, d)
+
+
+    # FK formula
+    avg_words_per_sentence = len(words) / len(sentences)
+    avg_syllables_per_word = syllables / len(words)
+    fk_score = 0.39 * avg_words_per_sentence + 11.8 * avg_syllables_per_word - 15.59
+
+    return fk_score
+    
 
 from nltk.corpus import cmudict
 d = cmudict.dict()
@@ -56,12 +84,12 @@ def count_syl(word, d):
         return 1
 
 
-def read_novels(path=Path.cwd() / "texts" / "novels"):
-    """Reads texts from a directory of .txt files and returns a DataFrame with the text, title,
-    author, and year"""
+#def read_novels(path=Path.cwd() / "texts" / "novels"):
+
     
 def read_novels(path=Path.cwd() / "p1-texts" / "novels"):
-
+    """Reads texts from a directory of .txt files and returns a DataFrame with the text, title,
+    author, and year"""    
     rows = []  # List to store each novel's data
 
     # Loop through all .txt files in the directory
