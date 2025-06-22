@@ -31,7 +31,8 @@ def fk_level(text, d):
     """
     pass
 
-
+from nltk.corpus import cmudict
+d = cmudict.dict()
 def count_syl(word, d):
     """Counts the number of syllables in a word given a dictionary of syllables per word.
     if the word is not in the dictionary, syllables are estimated by counting vowel clusters
@@ -43,7 +44,16 @@ def count_syl(word, d):
     Returns:
         int: The number of syllables in the word.
     """
-    pass
+    
+ 
+    if word in d:
+        count = 0
+        for sound in d[word][0]:
+            if sound[-1].isdigit():
+                count += 1
+        return count
+    else:
+        return 1
 
 
 def read_novels(path=Path.cwd() / "texts" / "novels"):
