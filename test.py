@@ -332,3 +332,39 @@ for i, row in df.iterrows():
     print(row["title"])
     print(subjects_by_verb_count(row["parsed"], "hear"))
     print("\n")
+
+
+
+from collections import Counter
+import math
+def subjects_by_verb_pmi(doc, target_verb):
+    joint_counts = Counter()
+    subject_counts = Counter()
+    total_joint = 0   # Number of (subject, verb) pairs
+    total_subj = 0    # Total number of subjects (any verb)
+
+    for token in doc:
+        if token.pos_ == "VERB" and token.lemma_ == target_verb:
+            for child in token.children:
+                if child.dep_ in {"nsubj", "nsubjpass"}:
+                    subj = child.lemma_.lower()
+                    joint_counts[subj] += 1
+                    total_joint += 1
+
+        # Collect *all* syntactic subjects (whether with this verb or others)
+        if token.dep_ in {"nsubj", "nsubjpass"}:
+            subj = token.lemma_.lower()
+            subject_counts[subj] += 1
+            total_subj += 1
+
+    # PMI computation
+    pmi_scores = {}
+    for subj in joint_counts:
+        p_joint = joint_counts[subj] / total_joint
+        p_subj = subject_counts[subj] / total_subj
+        if p_subj > 0:
+            pmi_scores[subj] = math.log2(p_joint / p_subj)
+
+    return sorted(pmi_scores.items(), key=lambda x: x[1], reverse=True)[:10]
+
+
