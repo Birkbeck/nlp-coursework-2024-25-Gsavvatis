@@ -275,6 +275,7 @@ def adjective_counts(doc):
 # ----
 from collections import Counter
 parsed_df = parse(df)
+"""
 def object_counts(doc):
     object_labels = {"obj", "dobj", "pobj", "dative"}
     objects = []
@@ -282,6 +283,29 @@ def object_counts(doc):
         if token.dep_ in object_labels:
             objects.append(token.text.lower())
     return Counter(objects).most_common(10)
+"""
+
+
+from collections import Counter
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+
+def object_counts(doc):
+
+    object_labels = {"obj", "dobj", "pobj", "dative"}
+    objects = []
+    
+    for token in doc:
+        if token.dep_ in object_labels:
+            if token.pos_ in {"NOUN", "PROPN"}:
+                if not token.is_stop:
+                    if not token.is_punct:
+                        objects.append(token.lemma_.lower())  # use lemma to group similar forms
+    
+    return Counter(objects).most_common(10)
+
+
 
 for i, row in parsed_df.iterrows():
     print(row["title"])
