@@ -270,23 +270,24 @@ def adjective_counts(doc):
     for token in doc:
         if token.pos_ == "ADJ":
             adjectives.append(token.text.lower())
-    return Counter(adjectives).most_common()
+    return Counter(adjectives).most_common(10)
 
+# ----
+from collections import Counter
+parsed_df = parse(df)
+def object_counts(doc):
+    object_labels = {"obj", "dobj", "pobj", "dative"}
+    objects = []
+    for token in doc:
+        if token.dep_ in object_labels:
+            objects.append(token.text.lower())
+    return Counter(objects).most_common(10)
 
 for i, row in parsed_df.iterrows():
     print(row["title"])
-    print(adjective_counts(row["parsed"])[:5])  # Top 5 adjectives
+    print(object_counts(row["parsed"]))
     print()
 
 
-
-
-
-
-
-
-
-
-  
 
 
