@@ -189,7 +189,7 @@ def get_fks(df):
     return results
 
 
-
+"""
 #TEST
 # Calculate FK scores
 fk_scores = get_fks(df)
@@ -201,7 +201,7 @@ df["fk"] = df["title"].map(fk_scores)
 
 print(df[["title", "ttr", "fk"]].head(10))  # Display key results
 
-
+"""
 
 
 import spacy
@@ -274,7 +274,7 @@ def adjective_counts(doc):
 
 # ----
 from collections import Counter
-parsed_df = parse(df)
+#parsed_df = parse(df)
 """
 def object_counts(doc):
     object_labels = {"obj", "dobj", "pobj", "dative"}
@@ -285,6 +285,8 @@ def object_counts(doc):
     return Counter(objects).most_common(10)
 """
 
+
+#parsed_df = pd.read_pickle(Path.cwd() / "pickles" / "parsed.pickle")
 
 from collections import Counter
 import spacy
@@ -314,4 +316,19 @@ for i, row in parsed_df.iterrows():
 
 
 
+def subjects_by_verb_count(doc, verb):
+    subjects = []
 
+    for token in doc:
+        if token.pos_ == "VERB" and token.lemma_ == verb:
+            for child in token.children:
+                if child.dep_ in {"nsubj", "nsubjpass"}:
+                    if not child.is_stop and not child.is_punct:
+                        subjects.append(child.lemma_.lower())
+
+    return Counter(subjects).most_common(10)
+
+for i, row in df.iterrows():
+    print(row["title"])
+    print(subjects_by_verb_count(row["parsed"], "hear"))
+    print("\n")
