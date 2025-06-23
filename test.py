@@ -323,8 +323,8 @@ def subjects_by_verb_count(doc, verb):
         if token.pos_ == "VERB" and token.lemma_ == verb:
             for child in token.children:
                 if child.dep_ in {"nsubj", "nsubjpass"}:
-                    if not child.is_stop and not child.is_punct:
-                        subjects.append(child.lemma_.lower())
+                  
+                    subjects.append(child.lemma_.lower())
 
     return Counter(subjects).most_common(10)
 
