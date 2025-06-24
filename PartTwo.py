@@ -1,3 +1,5 @@
+
+#Task 2(a): Preprocess data
 import pandas as pd
 
 def preprocess_hansard_data(filepath):
@@ -42,3 +44,22 @@ def preprocess_hansard_data(filepath):
 df= preprocess_hansard_data("p2-texts/hansard40000.csv")
 
 print(df.shape)
+
+
+
+# Task 2(b): Convert speeches to TF-IDF vectors
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+
+# Step 1: Vectorise the speeches using TF-IDF
+tfidf_vectorizer = TfidfVectorizer(stop_words='english', max_features=3000)
+X_tfidf = tfidf_vectorizer.fit_transform(df['speech'])
+
+# Step 2: Create label vector (party)
+y = df['party']
+
+# Step 3: Split into train and test sets with stratified sampling
+X_train, X_test, y_train, y_test = train_test_split(
+    X_tfidf, y, test_size=0.25, stratify=y, random_state=26
+)
