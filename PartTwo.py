@@ -91,3 +91,41 @@ svm_f1 = f1_score(y_test, svm_preds, average='macro')
 print("SVM Macro F1 Score:", svm_f1)
 print("SVM Classification Report:")
 print(classification_report(y_test, svm_preds))
+
+
+
+### Task 2(d): Use n-grams in TF-IDF and re-evaluate models
+
+# Step 1: Vectorise with unigrams, bigrams, and trigrams
+ngram_vectorizer = TfidfVectorizer(
+    stop_words='english',
+    max_features=3000,
+    ngram_range=(1, 3)
+)
+X_ngrams = ngram_vectorizer.fit_transform(df['speech'])
+
+# Step 2: Keep same labels
+y = df['party']
+
+# Step 3: Split again using stratified sampling
+X_train_ngram, X_test_ngram, y_train_ngram, y_test_ngram = train_test_split(
+    X_ngrams, y, test_size=0.25, stratify=y, random_state=26
+)
+
+# Step 4: Train and evaluate Random Forest
+rf_ngram = RandomForestClassifier(n_estimators=300, random_state=26)
+rf_ngram.fit(X_train_ngram, y_train_ngram)
+rf_preds_ngram = rf_ngram.predict(X_test_ngram)
+rf_f1_ngram = f1_score(y_test_ngram, rf_preds_ngram, average='macro')
+print("\nRandom Forest Macro F1 Score (with n-grams):", rf_f1_ngram)
+print("Random Forest Classification Report (with n-grams):")
+print(classification_report(y_test_ngram, rf_preds_ngram, zero_division=0))
+
+# Step 5: Train and evaluate SVM
+svm_ngram = SVC(kernel='linear', random_state=26)
+svm_ngram.fit(X_train_ngram, y_train_ngram)
+svm_preds_ngram = svm_ngram.predict(X_test_ngram)
+svm_f1_ngram = f1_score(y_test_ngram, svm_preds_ngram, average='macro')
+print("\nSVM Macro F1 Score (with n-grams):", svm_f1_ngram)
+print("SVM Classification Report (with n-grams):")
+print(classification_report(y_test_ngram, svm_preds_ngram))
