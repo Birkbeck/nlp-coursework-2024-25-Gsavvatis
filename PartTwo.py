@@ -22,12 +22,6 @@ def preprocess_hansard_data(filepath):
     # Rename party
     df['party'] = df['party'].replace('Labour (Co-op)', 'Labour')
 
-    # Keep only 'Speech'
-    df = df[df['speech_class'] == 'Speech']
-
-    # Remove short speeches
-    df = df[df['speech'].str.len() >= 1000]
-
     # Count parties and keep top 4
     party_counts = df['party'].value_counts()
     top_parties = party_counts.head(4).index.tolist()
@@ -35,6 +29,12 @@ def preprocess_hansard_data(filepath):
     # Remove 'Speaker' if it's in top 4
     if 'Speaker' in top_parties:
         top_parties.remove('Speaker')
+
+    # Keep only 'Speech'
+    df = df[df['speech_class'] == 'Speech']
+
+    # Remove short speeches
+    df = df[df['speech'].str.len() >= 1000]
 
     # Keep only top parties
     df = df[df['party'].isin(top_parties)]
