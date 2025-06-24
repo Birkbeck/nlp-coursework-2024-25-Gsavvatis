@@ -63,3 +63,31 @@ y = df['party']
 X_train, X_test, y_train, y_test = train_test_split(
     X_tfidf, y, test_size=0.25, stratify=y, random_state=26
 )
+
+### Task 2(c): Train and Evaluate Classifiers
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import f1_score, classification_report
+
+# Train Random Forest Classifier
+rf_model = RandomForestClassifier(n_estimators=300, random_state=26)
+rf_model.fit(X_train, y_train)
+rf_preds = rf_model.predict(X_test)
+
+# Print results for Random Forest
+rf_f1 = f1_score(y_test, rf_preds, average='macro')
+print("Random Forest Macro F1 Score:", rf_f1)
+print("Random Forest Classification Report:")
+print(classification_report(y_test, rf_preds, zero_division=0))
+
+# Train SVM with linear kernel
+svm_model = SVC(kernel='linear', random_state=26)
+svm_model.fit(X_train, y_train)
+svm_preds = svm_model.predict(X_test)
+
+# Print results for SVM
+svm_f1 = f1_score(y_test, svm_preds, average='macro')
+print("SVM Macro F1 Score:", svm_f1)
+print("SVM Classification Report:")
+print(classification_report(y_test, svm_preds))
