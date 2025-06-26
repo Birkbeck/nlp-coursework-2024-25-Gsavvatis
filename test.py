@@ -9,7 +9,7 @@ import pandas as pd
 nltk.download('punkt')
 nltk.download('cmudict')
 
-
+'''
 def read_novels(path=Path.cwd() / "p1-texts" / "novels"):
 
     rows = []  # List to store each novel's data
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     df = read_novels()
     print(df.head(20))  # Show the first few rows
     print(df.columns) # Check column names
-
+'''
 
 
 
@@ -116,7 +116,7 @@ def nltk_ttr(text):
 
     return round(ttr, 3)
 
-
+'''
 # Calculate TTR scores 
 ttr_scores = get_ttrs(df)
 for title, score in ttr_scores.items():
@@ -126,7 +126,7 @@ for title, score in ttr_scores.items():
 df["ttr"] = df["title"].map(ttr_scores)
 
 print(df.head())
-
+'''
 
 
 def count_syl(word, d):
@@ -260,7 +260,7 @@ def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
 
     return df
    
-parsed_df = parse(df)
+#parsed_df = parse(df)
 
 
 from collections import Counter
@@ -308,12 +308,12 @@ def object_counts(doc):
     return Counter(objects).most_common(10)
 
 
-
+'''
 for i, row in parsed_df.iterrows():
     print(row["title"])
     print(object_counts(row["parsed"]))
     print()
-
+'''
 
 
 def subjects_by_verb_count(doc, verb):
@@ -327,12 +327,12 @@ def subjects_by_verb_count(doc, verb):
                     subjects.append(child.lemma_.lower())
 
     return Counter(subjects).most_common(10)
-
-for i, row in df.iterrows():
+'''
+for i, row in parsed_df.iterrows():
     print(row["title"])
     print(subjects_by_verb_count(row["parsed"], "hear"))
     print("\n")
-
+'''
 
 
 from collections import Counter
@@ -368,3 +368,32 @@ def subjects_by_verb_pmi(doc, target_verb):
     return sorted(pmi_scores.items(), key=lambda x: x[1], reverse=True)[:10]
 
 
+
+
+path = Path.cwd() / "p1-texts" / "novels"
+print(path)
+df = read_novels(path) # this line will fail until you have completed the read_novels function above.
+print(df.head())
+nltk.download("cmudict")
+parse(df)
+print(df.head())
+print(get_ttrs(df))
+print(get_fks(df))
+df = pd.read_pickle(Path.cwd() / "pickles" /"name.pickle")
+# print(adjective_counts(df))
+     
+for i, row in df.iterrows():
+    print(row["title"])
+    print(object_counts(row["parsed"]))
+    print()
+
+for i, row in df.iterrows():
+    print(row["title"])
+    print(subjects_by_verb_count(row["parsed"], "hear"))
+    print("\n")
+
+for i, row in df.iterrows():
+    print(row["title"])
+    print(subjects_by_verb_pmi(row["parsed"], "hear"))
+    print("\n")
+    
